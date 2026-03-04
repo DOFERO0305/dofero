@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MZ News Aggregator | O Seu Portal</title>
+    <style>
+        /* Estilos Gerais */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; background: #f0f2f5; }
+        
+        /* Menu Superior */
+        nav { background: #1a1a1a; color: white; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 100; }
+        .logo { font-size: 1.2rem; font-weight: bold; color: #00d4ff; }
+        .nav-links { display: flex; }
+        .nav-links button { background: none; border: none; color: white; padding: 20px 15px; cursor: pointer; font-size: 14px; transition: 0.3s; }
+        .nav-links button:hover { background: #333; color: #00d4ff; }
+
+        /* Barra de Jornais */
+        .news-bar { background: #fff; padding: 10px 20px; display: flex; gap: 10px; overflow-x: auto; border-bottom: 1px solid #ddd; }
+        .news-bar a { background: #eef; color: #333; text-decoration: none; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 500; white-space: nowrap; transition: 0.2s; }
+        .news-bar a:hover { background: #00d4ff; color: white; }
+
+        /* Áreas de Conteúdo */
+        .page { display: none; flex-grow: 1; width: 100%; height: 100%; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        .active { display: block; }
+        .active-flex { display: flex; } /* Para o iframe */
+
+        /* Iframe para Notícias */
+        iframe { width: 100%; height: 100%; border: none; background: white; }
+
+        /* Estilo das Páginas de Texto */
+        .content-box { max-width: 800px; margin: 40px auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); line-height: 1.6; }
+        h1 { color: #1a1a1a; }
+        .contact-item { margin: 20px 0; font-size: 18px; }
+        .contact-item strong { color: #00d4ff; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">MZ NEWS AGGREGATOR</div>
+        <div class="nav-links">
+            <button onclick="showPage('home')">Início / Notícias</button>
+            <button onclick="showPage('about')">Quem Somos</button>
+            <button onclick="showPage('contact')">Contactos</button>
+        </div>
+    </nav>
+
+    <div id="news-selector" class="news-bar">
+        <a href="https://opais.co.mz/" target="visor">O País</a>
+        <a href="https://www.rm.co.mz/" target="visor">Rádio Moçambique</a>
+        <a href="https://www.jornalnoticias.co.mz/" target="visor">Jornal Notícias</a>
+        <a href="https://www.cartamz.com/" target="visor">Carta de Moçambique</a>
+        <a href="https://www.folhademaputo.co.mz/" target="visor">Folha de Maputo</a>
+    </div>
+
+    <div id="home" class="page active active-flex" style="flex-direction: column;">
+        <iframe name="visor" src="about:blank" title="Visualizador de Notícias"></iframe>
+    </div>
+
+    <div id="about" class="page">
+        <div class="content-box">
+            <h1>Sobre o Nosso Portal</h1>
+            <p>Bem-vindo ao <strong>MZ News Aggregator</strong>, o seu ponto de encontro centralizado para a informação de Moçambique.</p>
+            <p>A nossa missão é simplificar o acesso às notícias nacionais. Em vez de saltar de site em site, oferecemos uma interface única onde pode navegar pelos maiores órgãos de comunicação social do país de forma rápida e eficiente.</p>
+            <p>Este projeto foi criado para moçambicanos que valorizam o seu tempo e querem estar sempre a par do que acontece desde o Rovuma ao Maputo.</p>
+        </div>
+    </div>
+
+    <div id="contact" class="page">
+        <div class="content-box">
+            <h1>Contacte-nos</h1>
+            <p>Tem sugestões de novos portais ou encontrou algum problema técnico? Estamos aqui para ouvir.</p>
+            
+            <div class="contact-item">
+                <strong>📞 Telefone:</strong> +258 849085157
+            </div>
+            <div class="contact-item">
+                <strong>📧 E-mail:</strong> donald.fer.fer@gmail.com
+            </div>
+            <div class="contact-item">
+                <strong>📍 Localização:</strong> Maputo, Moçambique
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPage(pageId) {
+            // Esconde todas as páginas
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active', 'active-flex');
+            });
+            
+            // Mostra a página selecionada
+            const selectedPage = document.getElementById(pageId);
+            selectedPage.classList.add('active');
+            if(pageId === 'home') selectedPage.classList.add('active-flex');
+
+            // Esconde a barra de jornais se não for a home
+            const newsBar = document.getElementById('news-selector');
+            newsBar.style.display = (pageId === 'home') ? 'flex' : 'none';
+        }
+    </script>
+
+</body>
+</html>
