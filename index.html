@@ -1,106 +1,215 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-MZ">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MZ News Aggregator | O Seu Portal</title>
+    <title>MZ News Pro | Agregador Nacional</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        /* Estilos Gerais */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; background: #f0f2f5; }
+        :root {
+            --primary: #00d4ff; 
+            --bg: #0f1113;
+            --surface: #1a1d21;
+            --text: #ffffff;
+            --text-meta: #9ca3af;
+            --accent: #2563eb;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        /* --- NAVBAR --- */
+        .navbar { position: sticky; top: 0; background: rgba(15, 17, 19, 0.95); backdrop-filter: blur(12px); z-index: 1000; border-bottom: 1px solid #2d3135; }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 800; font-size: 1.5rem; text-decoration: none; color: var(--text); letter-spacing: -1px; }
+        .logo span { color: var(--primary); }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links button { background: none; border: none; color: var(--text-meta); cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
+        .nav-links button.active { color: var(--primary); }
+
+        /* --- HEADER & SEARCH --- */
+        .hero { padding: 40px 20px; text-align: center; max-width: 800px; margin: 0 auto; }
+        .search-box { position: relative; margin-top: 20px; }
+        .search-box input { width: 100%; padding: 16px 20px 16px 50px; border-radius: 12px; border: 1px solid #2d3135; background: var(--surface); color: white; font-size: 1rem; outline: none; transition: 0.3s; }
+        .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.1); }
+        .search-box i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-meta); }
+
+        /* --- GRID DE NOTÍCIAS --- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .news-card { background: var(--surface); border-radius: 16px; overflow: hidden; border: 1px solid #2d3135; transition: 0.3s; cursor: pointer; display: flex; flex-direction: column; }
+        .news-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .news-img { width: 100%; height: 180px; background: #2d3135; object-fit: cover; }
+        .news-content { padding: 20px; flex-grow: 1; }
+        .news-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--primary); margin-bottom: 10px; display: block; }
+        .news-title { font-size: 1.1rem; font-weight: 700; line-height: 1.4; margin-bottom: 10px; }
+        .news-meta { font-size: 0.8rem; color: var(--text-meta); display: flex; justify-content: space-between; }
+
+        /* --- PÁGINAS ESTÁTICAS --- */
+        .page { display: none; max-width: 800px; margin: 60px auto; padding: 20px; animation: fadeIn 0.5s; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Menu Superior */
-        nav { background: #1a1a1a; color: white; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 100; }
-        .logo { font-size: 1.2rem; font-weight: bold; color: #00d4ff; }
-        .nav-links { display: flex; }
-        .nav-links button { background: none; border: none; color: white; padding: 20px 15px; cursor: pointer; font-size: 14px; transition: 0.3s; }
-        .nav-links button:hover { background: #333; color: #00d4ff; }
+        .content-card { background: var(--surface); padding: 40px; border-radius: 20px; border: 1px solid #2d3135; }
+        .content-card h1 { margin-bottom: 20px; font-size: 2rem; }
+        .contact-info { margin-top: 30px; }
+        .contact-item { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; font-size: 1.1rem; }
+        .contact-item i { color: var(--primary); width: 25px; }
 
-        /* Barra de Jornais */
-        .news-bar { background: #fff; padding: 10px 20px; display: flex; gap: 10px; overflow-x: auto; border-bottom: 1px solid #ddd; }
-        .news-bar a { background: #eef; color: #333; text-decoration: none; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 500; white-space: nowrap; transition: 0.2s; }
-        .news-bar a:hover { background: #00d4ff; color: white; }
-
-        /* Áreas de Conteúdo */
-        .page { display: none; flex-grow: 1; width: 100%; height: 100%; overflow-y: auto; padding: 20px; box-sizing: border-box; }
-        .active { display: block; }
-        .active-flex { display: flex; } /* Para o iframe */
-
-        /* Iframe para Notícias */
+        /* --- MODAL DO LEITOR --- */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: none; flex-direction: column; }
+        .modal-header { padding: 15px 20px; background: var(--surface); display: flex; justify-content: space-between; align-items: center; }
+        .close-btn { background: var(--primary); border: none; color: black; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .modal-body { flex-grow: 1; position: relative; }
         iframe { width: 100%; height: 100%; border: none; background: white; }
 
-        /* Estilo das Páginas de Texto */
-        .content-box { max-width: 800px; margin: 40px auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); line-height: 1.6; }
-        h1 { color: #1a1a1a; }
-        .contact-item { margin: 20px 0; font-size: 18px; }
-        .contact-item strong { color: #00d4ff; }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .news-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">MZ NEWS AGGREGATOR</div>
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="#" class="logo" onclick="showSection('home')">MZ<span>NEWS</span></a>
         <div class="nav-links">
-            <button onclick="showPage('home')">Início / Notícias</button>
-            <button onclick="showPage('about')">Quem Somos</button>
-            <button onclick="showPage('contact')">Contactos</button>
+            <button class="active" id="btn-home" onclick="showSection('home')">Início</button>
+            <button id="btn-about" onclick="showSection('about')">Quem Somos</button>
+            <button id="btn-contact" onclick="showSection('contact')">Contactos</button>
         </div>
-    </nav>
-
-    <div id="news-selector" class="news-bar">
-        <a href="https://opais.co.mz/" target="visor">O País</a>
-        <a href="https://www.rm.co.mz/" target="visor">Rádio Moçambique</a>
-        <a href="https://www.jornalnoticias.co.mz/" target="visor">Jornal Notícias</a>
-        <a href="https://www.cartamz.com/" target="visor">Carta de Moçambique</a>
-        <a href="https://www.folhademaputo.co.mz/" target="visor">Folha de Maputo</a>
     </div>
+</nav>
 
-    <div id="home" class="page active active-flex" style="flex-direction: column;">
-        <iframe name="visor" src="about:blank" title="Visualizador de Notícias"></iframe>
-    </div>
-
-    <div id="about" class="page">
-        <div class="content-box">
-            <h1>Sobre o Nosso Portal</h1>
-            <p>Bem-vindo ao <strong>MZ News Aggregator</strong>, o seu ponto de encontro centralizado para a informação de Moçambique.</p>
-            <p>A nossa missão é simplificar o acesso às notícias nacionais. Em vez de saltar de site em site, oferecemos uma interface única onde pode navegar pelos maiores órgãos de comunicação social do país de forma rápida e eficiente.</p>
-            <p>Este projeto foi criado para moçambicanos que valorizam o seu tempo e querem estar sempre a par do que acontece desde o Rovuma ao Maputo.</p>
+<main id="section-home" class="page active">
+    <div class="hero">
+        <h1>O que acontece em Moçambique?</h1>
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-input" placeholder="Pesquisar notícias agora..." onkeyup="filterNews()">
         </div>
     </div>
 
-    <div id="contact" class="page">
-        <div class="content-box">
-            <h1>Contacte-nos</h1>
-            <p>Tem sugestões de novos portais ou encontrou algum problema técnico? Estamos aqui para ouvir.</p>
-            
+    <div class="container">
+        <div class="news-grid" id="news-feed">
+            </div>
+    </div>
+</main>
+
+<section id="section-about" class="page">
+    <div class="content-card">
+        <h1>Sobre o MZ News Pro</h1>
+        <p>O MZ News Pro é a maior e mais sofisticada plataforma de agregação de notícias em Moçambique. O nosso sistema organiza os conteúdos dos principais órgãos de comunicação como O País, Rádio Moçambique e Jornal Notícias numa interface única.</p>
+        <br>
+        <p>Focamos na rapidez e na experiência do utilizador, garantindo que a informação chegue até si sem distrações.</p>
+    </div>
+</section>
+
+<section id="section-contact" class="page">
+    <div class="content-card">
+        <h1>Fale Connosco</h1>
+        <p>Estamos disponíveis para parcerias, suporte técnico e sugestões de novos canais de notícias.</p>
+        
+        <div class="contact-info">
             <div class="contact-item">
-                <strong>📞 Telefone:</strong> +258 849085157
+                <i class="fas fa-phone"></i>
+                <span>+258 849085157</span>
             </div>
             <div class="contact-item">
-                <strong>📧 E-mail:</strong> donald.fer.fer@gmail.com
+                <i class="fas fa-envelope"></i>
+                <span>donald.fer.fer@gmail.com</span>
             </div>
             <div class="contact-item">
-                <strong>📍 Localização:</strong> Maputo, Moçambique
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Maputo, Moçambique</span>
             </div>
         </div>
     </div>
+</section>
 
-    <script>
-        function showPage(pageId) {
-            // Esconde todas as páginas
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active', 'active-flex');
-            });
-            
-            // Mostra a página selecionada
-            const selectedPage = document.getElementById(pageId);
-            selectedPage.classList.add('active');
-            if(pageId === 'home') selectedPage.classList.add('active-flex');
+<div class="modal" id="news-modal">
+    <div class="modal-header">
+        <span id="modal-title" style="font-weight: bold;">Lendo Notícia...</span>
+        <button class="close-btn" onclick="closeNews()">Fechar [X]</button>
+    </div>
+    <div class="modal-body">
+        <iframe id="news-frame" src=""></iframe>
+    </div>
+</div>
 
-            // Esconde a barra de jornais se não for a home
-            const newsBar = document.getElementById('news-selector');
-            newsBar.style.display = (pageId === 'home') ? 'flex' : 'none';
-        }
-    </script>
+<script>
+    // BASE DE DADOS DE NOTÍCIAS (Podes atualizar estes links e títulos diariamente)
+    const newsData = [
+        { title: "Banco de Moçambique reduz taxa de juro MIMO", source: "O País", tag: "Economia", date: "Hoje", img: "https://images.unsplash.com/photo-1611974714024-4627d00b18bc?w=500", url: "https://opais.co.mz/" },
+        { title: "Conselho de Ministros aprova novo estatuto de aposentação", source: "RM", tag: "Política", date: "3 Mar", img: "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=500", url: "https://www.rm.co.mz/" },
+        { title: "Mambas preparam-se para as próximas eliminatórias", source: "Jornal Notícias", tag: "Desporto", date: "Ontem", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=500", url: "https://www.jornalnoticias.co.mz/" },
+        { title: "Chuvas intensas previstas para o centro do país", source: "INAM", tag: "Sociedade", date: "Hoje", img: "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?w=500", url: "https://www.folhademaputo.co.mz/" },
+        { title: "Investimento de 27 milhões USD em Cabo Delgado", source: "Carta MZ", tag: "Sociedade", date: "4 Mar", img: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=500", url: "https://www.cartamz.com/" },
+        { title: "Preços de gás natural disparam no mercado global", source: "O País", tag: "Internacional", date: "2 horas atrás", img: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=500", url: "https://opais.co.mz/" }
+    ];
+
+    // FUNÇÃO PARA RENDERIZAR AS NOTÍCIAS
+    function renderNews(data) {
+        const feed = document.getElementById('news-feed');
+        feed.innerHTML = '';
+        
+        data.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'news-card';
+            card.onclick = () => openNews(item.url, item.title);
+            card.innerHTML = `
+                <img src="${item.img}" class="news-img">
+                <div class="news-content">
+                    <span class="news-tag">${item.tag}</span>
+                    <h3 class="news-title">${item.title}</h3>
+                    <div class="news-meta">
+                        <span><i class="far fa-newspaper"></i> ${item.source}</span>
+                        <span><i class="far fa-clock"></i> ${item.date}</span>
+                    </div>
+                </div>
+            `;
+            feed.appendChild(card);
+        });
+    }
+
+    // NAVEGAÇÃO ENTRE PÁGINAS
+    function showSection(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+        
+        document.getElementById('section-' + id).classList.add('active');
+        document.getElementById('btn-' + id).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    // PESQUISA
+    function filterNews() {
+        const term = document.getElementById('search-input').value.toLowerCase();
+        const filtered = newsData.filter(n => n.title.toLowerCase().includes(term) || n.source.toLowerCase().includes(term));
+        renderNews(filtered);
+    }
+
+    // ABRIR NOTÍCIA NO MODAL (DENTRO DO SITE)
+    function openNews(url, title) {
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('news-frame').src = url;
+        document.getElementById('news-modal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeNews() {
+        document.getElementById('news-modal').style.display = 'none';
+        document.getElementById('news-frame').src = '';
+        document.body.style.overflow = 'auto';
+    }
+
+    // INICIALIZAR
+    window.onload = () => renderNews(newsData);
+</script>
 
 </body>
 </html>
