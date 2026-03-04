@@ -3,90 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mz News | Última Hora</title>
+    <title>Mz News | Agregador Inteligente</title>
     <style>
-        /* ================= Variaveis de Cores ================= */
+        /* ================= Cores e Variáveis ================= */
         :root {
             --cor-primaria: #ffffff;
             --cor-secundaria: #e31c25;
-            --cor-texto: #222222;
+            --cor-texto: #1a1a1a;
             --cor-menu: #111111;
-            --cor-borda: #eeeeee;
+            --cor-borda: #e5e5e5;
             --cor-cinza: #666666;
+            --cor-aviso: #0066cc;
         }
 
-        /* ================= Estilos Globais ================= */
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f9f9f9; color: var(--cor-texto); line-height: 1.4; }
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f5f6f7; color: var(--cor-texto); line-height: 1.5; }
 
-        header { background-color: var(--cor-primaria); border-top: 5px solid var(--cor-secundaria); padding: 20px 0; text-align: center; }
-        .logo h1 { font-size: 2.5rem; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; color: #000; }
+        /* ================= Cabeçalho ================= */
+        header { background-color: var(--cor-primaria); border-top: 5px solid var(--cor-secundaria); padding: 15px 0; text-align: center; }
+        .logo h1 { font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; color: #000; }
         .logo h1 span { color: var(--cor-secundaria); }
-        .slogan { font-size: 0.85rem; color: var(--cor-cinza); text-transform: uppercase; font-weight: bold; margin-top: 5px; }
+        .slogan { font-size: 0.8rem; color: var(--cor-cinza); text-transform: uppercase; font-weight: bold; }
 
-        nav { background-color: var(--cor-menu); position: sticky; top: 0; z-index: 1000; width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .nav-container { max-width: 1000px; margin: 0 auto; display: flex; justify-content: center; overflow-x: auto; scrollbar-width: none; }
-        .nav-container button { background: none; border: none; color: white; padding: 15px 20px; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        /* ================= Menu ================= */
+        nav { background-color: var(--cor-menu); position: sticky; top: 0; z-index: 1000; width: 100%; }
+        .nav-container { max-width: 1000px; margin: 0 auto; display: flex; overflow-x: auto; scrollbar-width: none; }
+        .nav-container button { flex: 1; background: none; border: none; color: white; padding: 15px; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; cursor: pointer; white-space: nowrap; }
         .nav-container button.ativo { background-color: var(--cor-secundaria); }
 
-        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.05); min-height: 80vh; }
+        /* ================= Alerta Novas Notícias ================= */
+        .alerta-novas {
+            position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
+            background-color: var(--cor-aviso); color: white; padding: 10px 20px;
+            border-radius: 20px; font-weight: bold; font-size: 0.9rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer;
+            z-index: 1001; display: none; text-transform: uppercase;
+        }
+        .alerta-novas:hover { background-color: #0052a3; }
+
+        /* ================= Container ================= */
+        .container { max-width: 1000px; margin: 0 auto; padding: 0; background: white; min-height: 85vh; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+        .pesquisa { width: 100%; padding: 15px 20px; border: none; border-bottom: 1px solid var(--cor-borda); font-size: 16px; outline: none; background: #fafafa; }
+        .topo-feed { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 2px solid var(--cor-secundaria); background: #fff; }
+        .titulo-seccao { font-weight: bold; text-transform: uppercase; font-size: 1.1rem; }
         
-        .topo-feed { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid var(--cor-secundaria); background: #fdfdfd; }
-        .titulo-seccao { font-size: 1.2rem; font-weight: bold; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
-        .ponto-vermelho { width: 10px; height: 10px; background-color: var(--cor-secundaria); border-radius: 50%; animation: piscar 2s infinite; }
-        @keyframes piscar { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
-        .status { font-size: 0.85rem; color: var(--cor-cinza); font-weight: bold; }
-
-        .pesquisa { width: 100%; padding: 12px 20px; border: none; border-bottom: 1px solid var(--cor-borda); background-color: #fafafa; font-size: 16px; outline: none; }
-        .pesquisa:focus { background-color: #fff; border-bottom: 2px solid var(--cor-menu); }
-
         /* ================= Timeline ================= */
         .feed { display: flex; flex-direction: column; }
-        .item-noticia { display: flex; padding: 20px; border-bottom: 1px solid var(--cor-borda); text-decoration: none; color: inherit; cursor: pointer; }
-        .item-noticia:hover { background-color: #fcfcfc; }
-        .item-noticia:hover .titulo-noticia { color: var(--cor-secundaria); }
-
-        .hora-noticia { min-width: 60px; font-size: 1.1rem; font-weight: bold; color: var(--cor-secundaria); padding-right: 15px; }
-        .imagem-noticia { width: 140px; height: 90px; object-fit: cover; border-radius: 4px; margin-right: 20px; background-color: #eee; flex-shrink: 0; border: 1px solid #ddd; }
+        .item-noticia { display: flex; padding: 20px; border-bottom: 1px solid var(--cor-borda); position: relative; transition: background 0.2s; }
+        .item-noticia:hover { background-color: #fbfbfb; cursor: pointer; }
         
-        .conteudo-noticia { flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; }
-        .etiqueta-fonte { font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--cor-cinza); margin-bottom: 5px; display: inline-block; }
-        .titulo-noticia { font-size: 1.2rem; font-weight: 700; margin: 0 0 5px 0; line-height: 1.3; }
-        .resumo-noticia { font-size: 0.95rem; color: var(--cor-cinza); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-        /* ================= Loader de Scroll e Rodapé ================= */
-        .carregando-mais { text-align: center; padding: 20px; font-weight: bold; color: var(--cor-secundaria); font-size: 0.9rem; text-transform: uppercase; display: none; }
-        .rodape-fontes { background-color: #111; color: #888; text-align: center; padding: 30px 20px; font-size: 0.85rem; line-height: 1.6; }
-        .rodape-fontes span { color: #fff; font-weight: bold; }
-
-        /* ================= Modal (Janela) - CORRIGIDO PARA IMAGENS ================= */
-        .modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); display: none; justify-content: center; overflow-y: auto; z-index: 2000; padding: 40px 20px; }
-        .modal-conteudo { width: 100%; max-width: 800px; background: white; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); position: relative; margin: auto; }
-        .btn-fechar { position: fixed; top: 15px; right: 25px; background: rgba(0,0,0,0.1); border-radius: 50%; width: 50px; height: 50px; border: none; font-size: 2rem; cursor: pointer; color: var(--cor-menu); line-height: 1; display: flex; align-items: center; justify-content: center; z-index: 2001;}
-        .btn-fechar:hover { background: var(--cor-secundaria); color: white; }
+        .hora-noticia { min-width: 55px; font-size: 1.1rem; font-weight: bold; color: var(--cor-secundaria); padding-right: 15px; }
+        .imagem-noticia { width: 130px; height: 90px; object-fit: cover; border-radius: 4px; margin-right: 20px; flex-shrink: 0; background-color: #eee; }
         
-        .modal-fonte { display: inline-block; background: var(--cor-menu); color: white; padding: 5px 10px; font-size: 0.8rem; text-transform: uppercase; font-weight: bold; margin-bottom: 20px; }
-        .modal-titulo { font-size: 2.2rem; font-weight: 900; line-height: 1.2; margin-bottom: 20px; color: #000; }
-        .modal-imagem-principal { width: 100%; max-height: 400px; object-fit: cover; margin-bottom: 30px; border-radius: 4px; }
+        .conteudo-noticia { flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; padding-right: 30px;}
+        .etiqueta-fonte { font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--cor-cinza); margin-bottom: 5px; }
+        .titulo-noticia { font-size: 1.15rem; font-weight: 700; margin: 0 0 5px 0; line-height: 1.3; }
         
-        /* A MÁGICA QUE IMPEDE O LAYOUT DE QUEBRAR */
-        .modal-texto { font-size: 1.15rem; line-height: 1.7; color: #333; overflow-wrap: break-word; word-wrap: break-word; }
-        .modal-texto img, .modal-texto iframe, .modal-texto figure, .modal-texto video {
-            max-width: 100% !important; /* Impede imagens de vazar do telemóvel */
-            height: auto !important; 
-            display: block; 
-            margin: 20px auto; 
-            border-radius: 5px;
+        /* Botão Salvar (Favorito) */
+        .btn-salvar { position: absolute; right: 20px; top: 20px; background: none; border: none; font-size: 1.5rem; color: #ccc; cursor: pointer; padding: 5px; z-index: 2; }
+        .btn-salvar.salvo { color: var(--cor-secundaria); }
+        .btn-salvar:hover { transform: scale(1.1); }
+
+        .carregando-mais { text-align: center; padding: 20px; font-weight: bold; color: var(--cor-secundaria); display: none; }
+        
+        /* ================= Modal Notícia ================= */
+        .modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+        .modal-conteudo { width: 100%; max-width: 750px; max-height: 90vh; background: white; padding: 40px; overflow-y: auto; position: relative; border-radius: 8px; }
+        .btn-fechar { position: fixed; top: 20px; right: 30px; background: rgba(0,0,0,0.5); color: white; border-radius: 50%; width: 40px; height: 40px; border: none; font-size: 1.5rem; cursor: pointer; z-index: 2001; }
+        
+        .modal-fonte { display: inline-block; background: var(--cor-menu); color: white; padding: 5px 10px; font-size: 0.8rem; text-transform: uppercase; font-weight: bold; margin-bottom: 15px; }
+        .modal-titulo { font-size: 2rem; font-weight: 900; line-height: 1.2; margin-bottom: 20px; }
+        .modal-imagem-principal { width: 100%; max-height: 400px; object-fit: cover; margin-bottom: 20px; border-radius: 5px; }
+        
+        /* Regras ultra-estritas para as imagens não quebrarem o layout */
+        .modal-texto { font-size: 1.1rem; line-height: 1.7; color: #333; overflow-wrap: break-word; }
+        .modal-texto img, .modal-texto figure, .modal-texto iframe {
+            max-width: 100% !important;
+            height: auto !important;
+            display: block !important;
+            margin: 15px auto !important;
         }
-        
-        .btn-ler-site { display: block; text-align: center; background: var(--cor-secundaria); color: white; text-decoration: none; padding: 15px; font-weight: bold; margin-top: 30px; text-transform: uppercase; border-radius: 3px; }
+
+        .btn-ler-site { display: block; text-align: center; background: var(--cor-secundaria); color: white; text-decoration: none; padding: 15px; font-weight: bold; margin-top: 30px; text-transform: uppercase; }
 
         @media (max-width: 600px) {
-            .item-noticia { flex-direction: column; position: relative; padding: 15px; }
-            .hora-noticia { position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.9); padding: 2px 5px; }
-            .imagem-noticia { width: 100%; height: 180px; margin-right: 0; margin-bottom: 10px; }
-            .modal-conteudo { padding: 20px; margin-top: 40px;}
-            .modal-titulo { font-size: 1.6rem; }
+            .item-noticia { flex-direction: column; padding: 15px; }
+            .hora-noticia { margin-bottom: 10px; }
+            .imagem-noticia { width: 100%; height: 200px; margin-bottom: 15px; }
+            .btn-salvar { top: 10px; right: 10px; background: rgba(255,255,255,0.8); border-radius: 50%; }
+            .modal-conteudo { padding: 20px; width: 100%; max-height: 100vh; border-radius: 0; }
+            .btn-fechar { top: 10px; right: 10px; }
         }
     </style>
 </head>
@@ -95,37 +101,29 @@
     <header>
         <div class="logo">
             <h1>Mz<span>News</span></h1>
-            <div class="slogan">O Agregador ao Minuto de Moçambique</div>
+            <div class="slogan">Fontes Múltiplas. Informação Num Só Lugar.</div>
         </div>
     </header>
 
     <nav>
         <div class="nav-container">
-            <button class="ativo">Última Hora</button>
-            <button onclick="document.getElementById('input-pesquisa').focus()">Pesquisar</button>
+            <button id="tab-todas" class="ativo" onclick="mudarAba('todas')">Últimas Notícias</button>
+            <button id="tab-salvas" onclick="mudarAba('salvas')">🔖 Guardados para Ler</button>
         </div>
     </nav>
 
+    <div id="alerta-novas" class="alerta-novas" onclick="aplicarNovasNoticias()">↑ Novas Notícias Disponíveis</div>
+
     <div class="container">
-        <input type="text" class="pesquisa" id="input-pesquisa" placeholder="Pesquisar por notícias, fontes ou temas..." onkeyup="pesquisarEFiltrar()">
+        <input type="text" class="pesquisa" id="input-pesquisa" placeholder="Pesquisar notícias ou fontes..." onkeyup="pesquisar()">
         
         <div class="topo-feed">
-            <div class="titulo-seccao">
-                <div class="ponto-vermelho"></div>
-                Ao Minuto
-            </div>
-            <div class="status" id="status-texto">A sincronizar com os jornais...</div>
+            <div class="titulo-seccao" id="titulo-seccao">Feed Principal</div>
+            <div style="font-size: 0.8rem; color: #888;" id="status-texto">A carregar rede Mz News...</div>
         </div>
 
-        <div class="feed" id="feed-noticias">
-            </div>
-        
-        <div class="carregando-mais" id="loading-scroll">A processar mais notícias...</div>
-    </div>
-
-    <div class="rodape-fontes">
-        <span>FONTES MONITORIZADAS NESTE AGREGADOR:</span><br><br>
-        O País • Carta de Moçambique • Evidências • Jornal Ikweli • Miramar • Folha de Maputo • Jornal Notícias • Jornal Domingo • Jornal Desafio • Canal de Moçambique • Dossiers e Factos • Jornal Rigor • Jornal Ngani • Agência de Informação de Moçambique (AIM)
+        <div class="feed" id="feed-noticias"></div>
+        <div class="carregando-mais" id="loading-scroll">A processar o arquivo dos jornais...</div>
     </div>
 
     <div class="modal-bg" id="modal-noticia" onclick="fecharModalExterno(event)">
@@ -136,212 +134,219 @@
             <h1 class="modal-titulo" id="modal-titulo"></h1>
             <img class="modal-imagem-principal" id="modal-imagem" src="" alt="">
             <div class="modal-texto" id="modal-texto"></div>
-            <a href="#" target="_blank" class="btn-ler-site" id="modal-link">Ler Notícia Completa no Site Oficial</a>
+            <a href="#" target="_blank" class="btn-ler-site" id="modal-link">Ler Original Completo</a>
         </div>
     </div>
 
     <script>
-        // 1. BANCO DE DADOS E PAGINAÇÃO
         let bancoDeNoticias = [];
-        let noticiasFiltradas = []; // As que estão ativas na pesquisa
-        let noticiasExibidasNaTela = 0;
-        const LIMITE_POR_PAGINA = 15; // Mostra 15 de cada vez
-        let estaCarregandoMais = false;
+        let bufferNovasNoticias = []; // Guarda notícias que chegam no background
+        let noticiasAtuaisExibidas = [];
+        let indexPagina = 0;
+        const LIMITE = 15;
+        let carregando = false;
+        let abaAtiva = 'todas';
 
+        // Sistema de Guardar para Ler (LocalStorage)
+        let guardados = JSON.parse(localStorage.getItem('mznews_salvos')) || [];
+
+        // Fontes Oficiais - Se uma falhar, não afeta as outras.
         const fontesMocambique = [
             { nome: "O País", url: "https://opais.co.mz/feed/" },
             { nome: "Carta de Moçambique", url: "https://cartamz.com/index.php?format=feed&type=rss" },
+            { nome: "Jornal Notícias", url: "https://jornalnoticias.co.mz/feed/" },
             { nome: "Evidências", url: "https://evidencias.co.mz/feed/" },
-            { nome: "Jornal Ikweli", url: "https://www.ikweli.co.mz/feed/" },
             { nome: "Miramar", url: "https://miramar.co.mz/feed/" },
             { nome: "Folha de Maputo", url: "https://www.folhademaputo.co.mz/mz/rss.php" },
-            { nome: "Jornal Notícias", url: "https://jornalnoticias.co.mz/feed/" },
+            { nome: "Canal de Moçambique", url: "https://canal.co.mz/feed/" },
             { nome: "Jornal Domingo", url: "https://jornaldomingo.co.mz/feed/" },
             { nome: "Jornal Desafio", url: "https://jornaldesafio.co.mz/feed/" },
-            { nome: "Canal de Moçambique", url: "https://canal.co.mz/feed/" },
+            { nome: "AIM", url: "https://aim.org.mz/feed/" },
             { nome: "Dossiers e Factos", url: "https://dossiersefactos.co.mz/feed/" },
             { nome: "Jornal Rigor", url: "https://jornalrigor.co.mz/feed/" },
-            { nome: "Jornal Ngani", url: "https://jornalngani.co.mz/feed/" },
-            { nome: "AIM", url: "https://aim.org.mz/feed/" }
+            { nome: "Jornal Ikweli", url: "https://www.ikweli.co.mz/feed/" }
         ];
 
-        function formatarHora(dataString) {
-            const data = new Date(dataString);
-            return data.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
-        }
-
-        // Função "Detetive": Tenta encontrar a imagem real escondida no texto se o site não mandar capa
-        function descobrirImagemVerdadeira(item) {
-            if (item.thumbnail && item.thumbnail !== "") return item.thumbnail;
+        // 1. SUPER EXTRATOR DE IMAGENS (Deteta imagens mal feitas pelos jornais)
+        function extrairImagemSegura(item) {
+            if (item.thumbnail && item.thumbnail.length > 5) return item.thumbnail;
             if (item.enclosure && item.enclosure.link) return item.enclosure.link;
             
-            // Procura uma tag <img> dentro do código HTML da notícia
-            const divProvisoria = document.createElement('div');
-            divProvisoria.innerHTML = item.content || item.description;
-            const imagemEscondida = divProvisoria.querySelector('img');
+            // Vasculha o código fonte da notícia atrás da tag <img src="...">
+            const textoCompleto = (item.content || '') + ' ' + (item.description || '');
+            const imgMatch = /<img[^>]+src="([^">]+)"/g.exec(textoCompleto);
+            if (imgMatch && imgMatch[1]) return imgMatch[1];
             
-            if (imagemEscondida && imagemEscondida.src) {
-                return imagemEscondida.src;
-            }
-            
-            // Se realmente não tiver foto, usa uma padrão elegante
-            return "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=600&q=80";
+            // Imagem neutra e profissional caso o jornal não tenha colocado NENHUMA foto
+            return "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600&q=80";
         }
 
-        // Misturar Fontes para não ficar repetido
-        function misturarJornais(noticias) {
-            // Separa as notícias por jornal
-            const grupos = {};
-            noticias.forEach(n => {
-                if(!grupos[n.fonte]) grupos[n.fonte] = [];
-                grupos[n.fonte].push(n);
-            });
-
-            const misturado = [];
-            let temMais = true;
-            
-            // Tira uma de cada jornal de forma intercalada (Round-Robin)
-            while(temMais) {
-                temMais = false;
-                for(let fonte in grupos) {
-                    if(grupos[fonte].length > 0) {
-                        misturado.push(grupos[fonte].shift());
-                        temMais = true;
-                    }
-                }
-            }
-            return misturado;
+        function formatarHora(data) {
+            return new Date(data).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
         }
 
-        async function buscarNoticias() {
-            const status = document.getElementById('status-texto');
-            
-            let noticiasNovasDestaRodada = [];
+        // 2. BUSCADOR (Background)
+        async function buscarNoticias(primeiraVez = false) {
+            if (primeiraVez) document.getElementById('status-texto').innerText = 'A ligar a todos os jornais...';
+            let novasEncontradas = [];
 
+            // A API rss2json ignora bloqueios de segurança dos navegadores
             for (let fonte of fontesMocambique) {
                 try {
-                    const apiConverter = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(fonte.url)}`;
-                    const resposta = await fetch(apiConverter);
-                    const dados = await resposta.json();
+                    const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(fonte.url)}&api_key=`);
+                    const dados = await res.json();
 
                     if (dados.status === 'ok') {
                         dados.items.forEach(item => {
-                            const jaExiste = bancoDeNoticias.some(n => n.link === item.link);
+                            // Verifica se já temos esta notícia no banco principal ou no buffer
+                            const existe = bancoDeNoticias.some(n => n.id === item.link) || bufferNovasNoticias.some(n => n.id === item.link);
                             
-                            if (!jaExiste) {
-                                let textoLimpo = item.description.replace(/<[^>]*>?/gm, '');
-
-                                const novaNoticia = {
+                            if (!existe) {
+                                novasEncontradas.push({
                                     id: item.link,
                                     titulo: item.title,
-                                    resumo: textoLimpo,
+                                    resumo: item.description.replace(/<[^>]*>?/gm, '').substring(0, 150) + '...',
                                     fonte: fonte.nome,
-                                    dataCompleta: new Date(item.pubDate),
+                                    dataObj: new Date(item.pubDate),
                                     hora: formatarHora(item.pubDate),
-                                    imagem: descobrirImagemVerdadeira(item),
+                                    imagem: extrairImagemSegura(item),
                                     conteudo: item.content || item.description,
                                     link: item.link
-                                };
-                                noticiasNovasDestaRodada.push(novaNoticia);
+                                });
                             }
                         });
                     }
-                } catch (erro) {
-                    // Ignora silenciosamente se o site estiver em baixo
+                } catch (e) {
+                    console.log(`Erro ao carregar ${fonte.nome}`);
                 }
             }
 
-            // Ordena as novas por data
-            noticiasNovasDestaRodada.sort((a, b) => b.dataCompleta - a.dataCompleta);
-            
-            // Mistura as fontes para não ler 10 do mesmo site seguidas
-            noticiasNovasDestaRodada = misturarJornais(noticiasNovasDestaRodada);
-
-            // Adiciona ao banco principal
-            bancoDeNoticias = [...noticiasNovasDestaRodada, ...bancoDeNoticias];
-
-            const horaAtual = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
-            status.innerText = `Atualizado às ${horaAtual}`;
-            
-            // Se for a primeira vez, desenha
-            if (noticiasExibidasNaTela === 0) {
-                pesquisarEFiltrar(); 
+            if (primeiraVez) {
+                bancoDeNoticias = novasEncontradas.sort((a, b) => b.dataObj - a.dataObj);
+                document.getElementById('status-texto').innerText = 'Sistema 100% Online';
+                prepararFeed();
+            } else if (novasEncontradas.length > 0) {
+                // Se não for a primeira vez, guarda as notícias novas no "Buffer" para não atrapalhar quem está a ler
+                bufferNovasNoticias = [...novasEncontradas, ...bufferNovasNoticias];
+                const btnAlerta = document.getElementById('alerta-novas');
+                btnAlerta.innerText = `↑ ${bufferNovasNoticias.length} Novas Notícias`;
+                btnAlerta.style.display = 'block'; // Mostra o aviso na tela
             }
         }
 
-        // Função que Desenha na Tela
-        function renderizarFeed(reiniciar = false) {
-            const feed = document.getElementById('feed-noticias');
-            
-            if (reiniciar) {
-                feed.innerHTML = '';
-                noticiasExibidasNaTela = 0;
-            }
+        // 3. ATUALIZAR FEED COM NOVAS (Clicando no botão de aviso)
+        function aplicarNovasNoticias() {
+            bancoDeNoticias = [...bufferNovasNoticias, ...bancoDeNoticias].sort((a, b) => b.dataObj - a.dataObj);
+            bufferNovasNoticias = []; // Limpa o buffer
+            document.getElementById('alerta-novas').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            prepararFeed();
+        }
 
-            if (noticiasFiltradas.length === 0) {
-                feed.innerHTML = '<div style="padding:40px; text-align:center; color:#888;">Nenhuma notícia encontrada.</div>';
+        // 4. PREPARAR DADOS PARA EXIBIR
+        function prepararFeed() {
+            indexPagina = 0;
+            const termo = document.getElementById('input-pesquisa').value.toLowerCase();
+            document.getElementById('feed-noticias').innerHTML = '';
+            
+            let base = abaAtiva === 'salvas' ? bancoDeNoticias.filter(n => guardados.includes(n.id)) : bancoDeNoticias;
+            
+            if (termo) {
+                base = base.filter(n => n.titulo.toLowerCase().includes(termo) || n.fonte.toLowerCase().includes(termo));
+            }
+            
+            noticiasAtuaisExibidas = base;
+            renderizarMais();
+        }
+
+        // 5. RENDERIZAR NA TELA (O SCROLL INFINITO)
+        function renderizarMais() {
+            const feed = document.getElementById('feed-noticias');
+            const lote = noticiasAtuaisExibidas.slice(indexPagina, indexPagina + LIMITE);
+            
+            if (lote.length === 0 && indexPagina === 0) {
+                feed.innerHTML = '<div style="padding:40px; text-align:center;">Nenhuma notícia encontrada.</div>';
                 return;
             }
 
-            // Pega apenas as próximas 15 notícias
-            const proximoLote = noticiasFiltradas.slice(noticiasExibidasNaTela, noticiasExibidasNaTela + LIMITE_POR_PAGINA);
-
-            proximoLote.forEach(noticia => {
+            lote.forEach(noticia => {
                 const item = document.createElement('div');
                 item.className = 'item-noticia';
-                item.onclick = () => abrirModal(noticia.id);
+                
+                const iconeSalvo = guardados.includes(noticia.id) ? '🔖' : '🔖';
+                const classSalvo = guardados.includes(noticia.id) ? 'salvo' : '';
 
+                // HTML do Cartão (Cuidado para não abrir a notícia ao clicar no botão de salvar)
                 item.innerHTML = `
                     <div class="hora-noticia">${noticia.hora}</div>
-                    <img class="imagem-noticia" src="${noticia.imagem}" alt="Foto" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=600'">
-                    <div class="conteudo-noticia">
+                    <img class="imagem-noticia" src="${noticia.imagem}" alt="Foto">
+                    <div class="conteudo-noticia" onclick="abrirModal('${noticia.id}')">
                         <div>
                             <span class="etiqueta-fonte">${noticia.fonte}</span>
                             <h2 class="titulo-noticia">${noticia.titulo}</h2>
                         </div>
-                        <p class="resumo-noticia">${noticia.resumo}</p>
+                        <p style="font-size: 0.9rem; color: #888; margin-top: 5px;">${noticia.resumo}</p>
                     </div>
+                    <button class="btn-salvar ${classSalvo}" onclick="alternarSalvar('${noticia.id}', this)" title="Guardar para ler depois">${iconeSalvo}</button>
                 `;
                 feed.appendChild(item);
             });
 
-            noticiasExibidasNaTela += proximoLote.length;
-            estaCarregandoMais = false;
+            indexPagina += LIMITE;
+            carregando = false;
             document.getElementById('loading-scroll').style.display = 'none';
+            
+            // Fim do conteúdo do RSS
+            if (indexPagina >= noticiasAtuaisExibidas.length && noticiasAtuaisExibidas.length > 0) {
+                document.getElementById('loading-scroll').style.display = 'block';
+                document.getElementById('loading-scroll').innerText = 'Estas são todas as notícias recentes fornecidas pelos jornais.';
+            }
         }
 
-        // Lógica de Scroll Infinito
+        // Detecta quando chega ao fundo da página
         window.onscroll = function() {
-            // Verifica se o usuário chegou perto do final da página
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-                // Se ainda há notícias para mostrar e não está carregando no momento
-                if (!estaCarregandoMais && noticiasExibidasNaTela < noticiasFiltradas.length) {
-                    estaCarregandoMais = true;
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 400) {
+                if (!carregando && indexPagina < noticiasAtuaisExibidas.length) {
+                    carregando = true;
                     document.getElementById('loading-scroll').style.display = 'block';
-                    
-                    // Simula um tempinho de processamento para ser suave
-                    setTimeout(() => {
-                        renderizarFeed(false);
-                    }, 500);
+                    document.getElementById('loading-scroll').innerText = 'A processar o arquivo...';
+                    setTimeout(renderizarMais, 400); // Pausa leve para não travar o telemóvel
                 }
             }
         };
 
-        function pesquisarEFiltrar() {
-            const termo = document.getElementById('input-pesquisa').value.toLowerCase();
-            noticiasFiltradas = bancoDeNoticias.filter(n => 
-                n.titulo.toLowerCase().includes(termo) || 
-                n.fonte.toLowerCase().includes(termo)
-            );
-            renderizarFeed(true); // Reinicia a tela e mostra a pesquisa
+        // 6. FAVORITOS / SALVAR
+        function alternarSalvar(id, botao) {
+            const index = guardados.indexOf(id);
+            if (index > -1) {
+                guardados.splice(index, 1);
+                botao.classList.remove('salvo');
+                if(abaAtiva === 'salvas') prepararFeed(); // Some da tela se tivermos na aba
+            } else {
+                guardados.push(id);
+                botao.classList.add('salvo');
+            }
+            localStorage.setItem('mznews_salvos', JSON.stringify(guardados));
         }
 
+        function mudarAba(aba) {
+            abaAtiva = aba;
+            document.getElementById('tab-todas').classList.remove('ativo');
+            document.getElementById('tab-salvas').classList.remove('ativo');
+            document.getElementById(`tab-${aba}`).classList.add('ativo');
+            document.getElementById('titulo-seccao').innerText = aba === 'todas' ? 'Feed Principal' : 'Guardados para Ler';
+            prepararFeed();
+        }
+
+        function pesquisar() { prepararFeed(); }
+
+        // 7. MODAL DE LEITURA
         function abrirModal(id) {
             const noticia = bancoDeNoticias.find(n => n.id === id);
             if (!noticia) return;
 
             document.getElementById('modal-fonte').innerText = noticia.fonte;
-            document.getElementById('modal-data').innerText = noticia.dataCompleta.toLocaleString('pt-PT');
+            document.getElementById('modal-data').innerText = noticia.dataObj.toLocaleDateString('pt-PT');
             document.getElementById('modal-titulo').innerText = noticia.titulo;
             document.getElementById('modal-imagem').src = noticia.imagem;
             document.getElementById('modal-texto').innerHTML = noticia.conteudo;
@@ -354,19 +359,18 @@
         function fecharModal() {
             document.getElementById('modal-noticia').style.display = 'none';
             document.body.style.overflow = '';
-            // Para vídeos ou áudios que possam estar a tocar, limpamos o conteúdo
-            document.getElementById('modal-texto').innerHTML = '';
+            document.getElementById('modal-texto').innerHTML = ''; // Para vídeos
         }
 
         function fecharModalExterno(event) {
-            if (event.target.id === 'modal-noticia' || event.target.className === 'btn-fechar') {
-                fecharModal();
-            }
+            if (event.target.id === 'modal-noticia') fecharModal();
         }
 
+        // Inicia o motor principal
         window.onload = async () => {
-            await buscarNoticias(); 
-            setInterval(buscarNoticias, 60000); // 1 minuto
+            await buscarNoticias(true);
+            // Procura novas notícias silenciosamente a cada 2 minutos (120000ms)
+            setInterval(() => buscarNoticias(false), 120000); 
         };
     </script>
 </body>
