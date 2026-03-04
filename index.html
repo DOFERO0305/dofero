@@ -5,79 +5,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mz News | Última Hora</title>
     <style>
-        /* ================= Variaveis de Cores (Estilo Notícias ao Minuto) ================= */
+        /* ================= Variaveis de Cores ================= */
         :root {
-            --cor-primaria: #ffffff; /* Fundo branco */
-            --cor-secundaria: #e31c25; /* Vermelho NAM */
-            --cor-texto: #222222; /* Texto quase preto */
-            --cor-menu: #111111; /* Preto para o menu */
-            --cor-borda: #eeeeee; /* Linhas divisórias muito suaves */
-            --cor-cinza: #666666; /* Texto secundário e horas */
+            --cor-primaria: #ffffff;
+            --cor-secundaria: #e31c25;
+            --cor-texto: #222222;
+            --cor-menu: #111111;
+            --cor-borda: #eeeeee;
+            --cor-cinza: #666666;
         }
 
         /* ================= Estilos Globais ================= */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f9f9f9; color: var(--cor-texto); line-height: 1.4; }
 
-        /* ================= Cabeçalho ================= */
         header { background-color: var(--cor-primaria); border-top: 5px solid var(--cor-secundaria); padding: 20px 0; text-align: center; }
-        .logo { display: inline-block; cursor: pointer; }
         .logo h1 { font-size: 2.5rem; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; color: #000; }
         .logo h1 span { color: var(--cor-secundaria); }
         .slogan { font-size: 0.85rem; color: var(--cor-cinza); text-transform: uppercase; font-weight: bold; margin-top: 5px; }
 
-        /* ================= Menu de Navegação ================= */
         nav { background-color: var(--cor-menu); position: sticky; top: 0; z-index: 1000; width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .nav-container { max-width: 1000px; margin: 0 auto; display: flex; justify-content: center; overflow-x: auto; scrollbar-width: none; }
         .nav-container button { background: none; border: none; color: white; padding: 15px 20px; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; white-space: nowrap; }
-        .nav-container button:hover, .nav-container button.ativo { background-color: var(--cor-secundaria); }
+        .nav-container button.ativo { background-color: var(--cor-secundaria); }
 
-        /* ================= Layout Principal (Timeline) ================= */
         .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.05); min-height: 80vh; }
         
         .topo-feed { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 2px solid var(--cor-secundaria); background: #fdfdfd; }
         .titulo-seccao { font-size: 1.2rem; font-weight: bold; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
         .ponto-vermelho { width: 10px; height: 10px; background-color: var(--cor-secundaria); border-radius: 50%; animation: piscar 2s infinite; }
         @keyframes piscar { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
-        
         .status { font-size: 0.85rem; color: var(--cor-cinza); font-weight: bold; }
 
-        .pesquisa { width: 100%; padding: 12px 20px; border: none; border-bottom: 1px solid var(--cor-borda); background-color: #fafafa; font-size: 16px; outline: none; transition: 0.3s; }
+        .pesquisa { width: 100%; padding: 12px 20px; border: none; border-bottom: 1px solid var(--cor-borda); background-color: #fafafa; font-size: 16px; outline: none; }
         .pesquisa:focus { background-color: #fff; border-bottom: 2px solid var(--cor-menu); }
 
-        /* ================= Item de Notícia (Lista Estilo NAM) ================= */
+        /* ================= Timeline ================= */
         .feed { display: flex; flex-direction: column; }
-        .item-noticia { display: flex; padding: 20px; border-bottom: 1px solid var(--cor-borda); text-decoration: none; color: inherit; transition: background 0.2s; cursor: pointer; }
+        .item-noticia { display: flex; padding: 20px; border-bottom: 1px solid var(--cor-borda); text-decoration: none; color: inherit; cursor: pointer; }
         .item-noticia:hover { background-color: #fcfcfc; }
         .item-noticia:hover .titulo-noticia { color: var(--cor-secundaria); }
 
         .hora-noticia { min-width: 60px; font-size: 1.1rem; font-weight: bold; color: var(--cor-secundaria); padding-right: 15px; }
-        .imagem-noticia { width: 140px; height: 90px; object-fit: cover; border-radius: 4px; margin-right: 20px; background-color: #eee; flex-shrink: 0; }
+        .imagem-noticia { width: 140px; height: 90px; object-fit: cover; border-radius: 4px; margin-right: 20px; background-color: #eee; flex-shrink: 0; border: 1px solid #ddd; }
         
-        .conteudo-noticia { flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .conteudo-noticia { flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; }
         .etiqueta-fonte { font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--cor-cinza); margin-bottom: 5px; display: inline-block; }
-        .titulo-noticia { font-size: 1.2rem; font-weight: 700; margin: 0 0 5px 0; line-height: 1.3; transition: color 0.2s; }
+        .titulo-noticia { font-size: 1.2rem; font-weight: 700; margin: 0 0 5px 0; line-height: 1.3; }
         .resumo-noticia { font-size: 0.95rem; color: var(--cor-cinza); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-        /* ================= Modal (Notícia Completa) ================= */
+        /* ================= Loader de Scroll e Rodapé ================= */
+        .carregando-mais { text-align: center; padding: 20px; font-weight: bold; color: var(--cor-secundaria); font-size: 0.9rem; text-transform: uppercase; display: none; }
+        .rodape-fontes { background-color: #111; color: #888; text-align: center; padding: 30px 20px; font-size: 0.85rem; line-height: 1.6; }
+        .rodape-fontes span { color: #fff; font-weight: bold; }
+
+        /* ================= Modal (Janela) - CORRIGIDO PARA IMAGENS ================= */
         .modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); display: none; justify-content: center; overflow-y: auto; z-index: 2000; padding: 40px 20px; }
-        .modal-conteudo { width: 100%; max-width: 800px; background: white; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); position: relative; }
-        .btn-fechar { position: fixed; top: 20px; right: 30px; background: none; border: none; font-size: 3rem; font-weight: 300; cursor: pointer; color: var(--cor-menu); line-height: 1; }
-        .btn-fechar:hover { color: var(--cor-secundaria); }
+        .modal-conteudo { width: 100%; max-width: 800px; background: white; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); position: relative; margin: auto; }
+        .btn-fechar { position: fixed; top: 15px; right: 25px; background: rgba(0,0,0,0.1); border-radius: 50%; width: 50px; height: 50px; border: none; font-size: 2rem; cursor: pointer; color: var(--cor-menu); line-height: 1; display: flex; align-items: center; justify-content: center; z-index: 2001;}
+        .btn-fechar:hover { background: var(--cor-secundaria); color: white; }
+        
         .modal-fonte { display: inline-block; background: var(--cor-menu); color: white; padding: 5px 10px; font-size: 0.8rem; text-transform: uppercase; font-weight: bold; margin-bottom: 20px; }
-        .modal-titulo { font-size: 2.5rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; color: #000; }
-        .modal-imagem { width: 100%; max-height: 450px; object-fit: cover; margin-bottom: 30px; }
-        .modal-texto { font-size: 1.15rem; line-height: 1.7; color: #333; }
-        .modal-texto p { margin-bottom: 20px; }
+        .modal-titulo { font-size: 2.2rem; font-weight: 900; line-height: 1.2; margin-bottom: 20px; color: #000; }
+        .modal-imagem-principal { width: 100%; max-height: 400px; object-fit: cover; margin-bottom: 30px; border-radius: 4px; }
+        
+        /* A MÁGICA QUE IMPEDE O LAYOUT DE QUEBRAR */
+        .modal-texto { font-size: 1.15rem; line-height: 1.7; color: #333; overflow-wrap: break-word; word-wrap: break-word; }
+        .modal-texto img, .modal-texto iframe, .modal-texto figure, .modal-texto video {
+            max-width: 100% !important; /* Impede imagens de vazar do telemóvel */
+            height: auto !important; 
+            display: block; 
+            margin: 20px auto; 
+            border-radius: 5px;
+        }
+        
         .btn-ler-site { display: block; text-align: center; background: var(--cor-secundaria); color: white; text-decoration: none; padding: 15px; font-weight: bold; margin-top: 30px; text-transform: uppercase; border-radius: 3px; }
 
-        /* Responsivo para telemóveis */
         @media (max-width: 600px) {
             .item-noticia { flex-direction: column; position: relative; padding: 15px; }
             .hora-noticia { position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.9); padding: 2px 5px; }
             .imagem-noticia { width: 100%; height: 180px; margin-right: 0; margin-bottom: 10px; }
-            .modal-conteudo { padding: 20px; }
-            .modal-titulo { font-size: 1.8rem; }
+            .modal-conteudo { padding: 20px; margin-top: 40px;}
+            .modal-titulo { font-size: 1.6rem; }
         }
     </style>
 </head>
@@ -93,26 +102,30 @@
     <nav>
         <div class="nav-container">
             <button class="ativo">Última Hora</button>
-            <button>Política</button>
-            <button>Economia</button>
-            <button>Desporto</button>
-            <button>Sociedade</button>
+            <button onclick="document.getElementById('input-pesquisa').focus()">Pesquisar</button>
         </div>
     </nav>
 
     <div class="container">
-        <input type="text" class="pesquisa" id="input-pesquisa" placeholder="Pesquisar por notícias, fontes ou temas..." onkeyup="pesquisarNoticias()">
+        <input type="text" class="pesquisa" id="input-pesquisa" placeholder="Pesquisar por notícias, fontes ou temas..." onkeyup="pesquisarEFiltrar()">
         
         <div class="topo-feed">
             <div class="titulo-seccao">
                 <div class="ponto-vermelho"></div>
                 Ao Minuto
             </div>
-            <div class="status" id="status-texto">A carregar fontes de Moçambique...</div>
+            <div class="status" id="status-texto">A sincronizar com os jornais...</div>
         </div>
 
         <div class="feed" id="feed-noticias">
             </div>
+        
+        <div class="carregando-mais" id="loading-scroll">A processar mais notícias...</div>
+    </div>
+
+    <div class="rodape-fontes">
+        <span>FONTES MONITORIZADAS NESTE AGREGADOR:</span><br><br>
+        O País • Carta de Moçambique • Evidências • Jornal Ikweli • Miramar • Folha de Maputo • Jornal Notícias • Jornal Domingo • Jornal Desafio • Canal de Moçambique • Dossiers e Factos • Jornal Rigor • Jornal Ngani • Agência de Informação de Moçambique (AIM)
     </div>
 
     <div class="modal-bg" id="modal-noticia" onclick="fecharModalExterno(event)">
@@ -121,18 +134,20 @@
             <span class="modal-fonte" id="modal-fonte"></span>
             <span style="color: #888; font-weight: bold; margin-left: 10px;" id="modal-data"></span>
             <h1 class="modal-titulo" id="modal-titulo"></h1>
-            <img class="modal-imagem" id="modal-imagem" src="" alt="">
+            <img class="modal-imagem-principal" id="modal-imagem" src="" alt="">
             <div class="modal-texto" id="modal-texto"></div>
             <a href="#" target="_blank" class="btn-ler-site" id="modal-link">Ler Notícia Completa no Site Oficial</a>
         </div>
     </div>
 
     <script>
-        // 1. BANCO DE DADOS E FONTES
+        // 1. BANCO DE DADOS E PAGINAÇÃO
         let bancoDeNoticias = [];
-        
-        // A lista com todas as fontes solicitadas. 
-        // Nota: Fontes sem RSS público conhecido recebem um link de simulação. Se o link falhar, o sistema ignora e não "crasha".
+        let noticiasFiltradas = []; // As que estão ativas na pesquisa
+        let noticiasExibidasNaTela = 0;
+        const LIMITE_POR_PAGINA = 15; // Mostra 15 de cada vez
+        let estaCarregandoMais = false;
+
         const fontesMocambique = [
             { nome: "O País", url: "https://opais.co.mz/feed/" },
             { nome: "Carta de Moçambique", url: "https://cartamz.com/index.php?format=feed&type=rss" },
@@ -150,85 +165,135 @@
             { nome: "AIM", url: "https://aim.org.mz/feed/" }
         ];
 
-        // Extrai a hora de uma data (Ex: "14:35")
         function formatarHora(dataString) {
             const data = new Date(dataString);
             return data.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
         }
 
-        // 2. BUSCADOR DE NOTÍCIAS (Corre a cada 1 minuto)
+        // Função "Detetive": Tenta encontrar a imagem real escondida no texto se o site não mandar capa
+        function descobrirImagemVerdadeira(item) {
+            if (item.thumbnail && item.thumbnail !== "") return item.thumbnail;
+            if (item.enclosure && item.enclosure.link) return item.enclosure.link;
+            
+            // Procura uma tag <img> dentro do código HTML da notícia
+            const divProvisoria = document.createElement('div');
+            divProvisoria.innerHTML = item.content || item.description;
+            const imagemEscondida = divProvisoria.querySelector('img');
+            
+            if (imagemEscondida && imagemEscondida.src) {
+                return imagemEscondida.src;
+            }
+            
+            // Se realmente não tiver foto, usa uma padrão elegante
+            return "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=600&q=80";
+        }
+
+        // Misturar Fontes para não ficar repetido
+        function misturarJornais(noticias) {
+            // Separa as notícias por jornal
+            const grupos = {};
+            noticias.forEach(n => {
+                if(!grupos[n.fonte]) grupos[n.fonte] = [];
+                grupos[n.fonte].push(n);
+            });
+
+            const misturado = [];
+            let temMais = true;
+            
+            // Tira uma de cada jornal de forma intercalada (Round-Robin)
+            while(temMais) {
+                temMais = false;
+                for(let fonte in grupos) {
+                    if(grupos[fonte].length > 0) {
+                        misturado.push(grupos[fonte].shift());
+                        temMais = true;
+                    }
+                }
+            }
+            return misturado;
+        }
+
         async function buscarNoticias() {
             const status = document.getElementById('status-texto');
-            status.innerText = 'A atualizar rede...';
-            let adicionadas = 0;
+            
+            let noticiasNovasDestaRodada = [];
 
-            // Percorre todos os sites da lista
             for (let fonte of fontesMocambique) {
                 try {
-                    // API converte o Feed RSS complexo em JSON fácil de ler
                     const apiConverter = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(fonte.url)}`;
                     const resposta = await fetch(apiConverter);
                     const dados = await resposta.json();
 
                     if (dados.status === 'ok') {
                         dados.items.forEach(item => {
-                            // Verifica se a notícia já existe pelo Link
                             const jaExiste = bancoDeNoticias.some(n => n.link === item.link);
                             
                             if (!jaExiste) {
-                                // Limpa o resumo de código HTML lixo
                                 let textoLimpo = item.description.replace(/<[^>]*>?/gm, '');
 
                                 const novaNoticia = {
                                     id: item.link,
                                     titulo: item.title,
                                     resumo: textoLimpo,
-                                    fonte: fonte.nome, // Usa o nome da nossa lista
-                                    dataCompleta: new Date(item.pubDate), // Para ordenar
+                                    fonte: fonte.nome,
+                                    dataCompleta: new Date(item.pubDate),
                                     hora: formatarHora(item.pubDate),
-                                    imagem: item.thumbnail || (item.enclosure && item.enclosure.link) || "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600&q=80",
+                                    imagem: descobrirImagemVerdadeira(item),
                                     conteudo: item.content || item.description,
                                     link: item.link
                                 };
-                                bancoDeNoticias.push(novaNoticia);
-                                adicionadas++;
+                                noticiasNovasDestaRodada.push(novaNoticia);
                             }
                         });
                     }
                 } catch (erro) {
-                    // Se um site (ex: Jornal Ngani) estiver em baixo, ignora silenciosamente e passa para o próximo
-                    console.log(`Não foi possível ligar ao ${fonte.nome}`);
+                    // Ignora silenciosamente se o site estiver em baixo
                 }
             }
 
-            // Ordena o banco de dados da mais recente (nova) para a mais antiga
-            bancoDeNoticias.sort((a, b) => b.dataCompleta - a.dataCompleta);
+            // Ordena as novas por data
+            noticiasNovasDestaRodada.sort((a, b) => b.dataCompleta - a.dataCompleta);
+            
+            // Mistura as fontes para não ler 10 do mesmo site seguidas
+            noticiasNovasDestaRodada = misturarJornais(noticiasNovasDestaRodada);
 
-            // Atualiza o texto e a tela
+            // Adiciona ao banco principal
+            bancoDeNoticias = [...noticiasNovasDestaRodada, ...bancoDeNoticias];
+
             const horaAtual = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
             status.innerText = `Atualizado às ${horaAtual}`;
             
-            pesquisarNoticias(); // Renderiza usando a pesquisa atual
+            // Se for a primeira vez, desenha
+            if (noticiasExibidasNaTela === 0) {
+                pesquisarEFiltrar(); 
+            }
         }
 
-        // 3. RENDERIZAR TIMELINE
-        function renderizarFeed(noticiasExibir) {
+        // Função que Desenha na Tela
+        function renderizarFeed(reiniciar = false) {
             const feed = document.getElementById('feed-noticias');
-            feed.innerHTML = '';
+            
+            if (reiniciar) {
+                feed.innerHTML = '';
+                noticiasExibidasNaTela = 0;
+            }
 
-            if (noticiasExibir.length === 0) {
-                feed.innerHTML = '<div style="padding:40px; text-align:center; color:#888;">Nenhuma notícia encontrada no momento.</div>';
+            if (noticiasFiltradas.length === 0) {
+                feed.innerHTML = '<div style="padding:40px; text-align:center; color:#888;">Nenhuma notícia encontrada.</div>';
                 return;
             }
 
-            noticiasExibir.forEach(noticia => {
+            // Pega apenas as próximas 15 notícias
+            const proximoLote = noticiasFiltradas.slice(noticiasExibidasNaTela, noticiasExibidasNaTela + LIMITE_POR_PAGINA);
+
+            proximoLote.forEach(noticia => {
                 const item = document.createElement('div');
                 item.className = 'item-noticia';
                 item.onclick = () => abrirModal(noticia.id);
 
                 item.innerHTML = `
                     <div class="hora-noticia">${noticia.hora}</div>
-                    <img class="imagem-noticia" src="${noticia.imagem}" alt="Foto" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600'">
+                    <img class="imagem-noticia" src="${noticia.imagem}" alt="Foto" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=600'">
                     <div class="conteudo-noticia">
                         <div>
                             <span class="etiqueta-fonte">${noticia.fonte}</span>
@@ -239,20 +304,38 @@
                 `;
                 feed.appendChild(item);
             });
+
+            noticiasExibidasNaTela += proximoLote.length;
+            estaCarregandoMais = false;
+            document.getElementById('loading-scroll').style.display = 'none';
         }
 
-        // 4. SISTEMA DE PESQUISA (Instantâneo)
-        function pesquisarNoticias() {
+        // Lógica de Scroll Infinito
+        window.onscroll = function() {
+            // Verifica se o usuário chegou perto do final da página
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+                // Se ainda há notícias para mostrar e não está carregando no momento
+                if (!estaCarregandoMais && noticiasExibidasNaTela < noticiasFiltradas.length) {
+                    estaCarregandoMais = true;
+                    document.getElementById('loading-scroll').style.display = 'block';
+                    
+                    // Simula um tempinho de processamento para ser suave
+                    setTimeout(() => {
+                        renderizarFeed(false);
+                    }, 500);
+                }
+            }
+        };
+
+        function pesquisarEFiltrar() {
             const termo = document.getElementById('input-pesquisa').value.toLowerCase();
-            const noticiasFiltradas = bancoDeNoticias.filter(n => 
+            noticiasFiltradas = bancoDeNoticias.filter(n => 
                 n.titulo.toLowerCase().includes(termo) || 
-                n.fonte.toLowerCase().includes(termo) ||
-                n.resumo.toLowerCase().includes(termo)
+                n.fonte.toLowerCase().includes(termo)
             );
-            renderizarFeed(noticiasFiltradas);
+            renderizarFeed(true); // Reinicia a tela e mostra a pesquisa
         }
 
-        // 5. MODAL (Leitor da Notícia)
         function abrirModal(id) {
             const noticia = bancoDeNoticias.find(n => n.id === id);
             if (!noticia) return;
@@ -271,18 +354,20 @@
         function fecharModal() {
             document.getElementById('modal-noticia').style.display = 'none';
             document.body.style.overflow = '';
+            // Para vídeos ou áudios que possam estar a tocar, limpamos o conteúdo
+            document.getElementById('modal-texto').innerHTML = '';
         }
 
         function fecharModalExterno(event) {
-            if (event.target.id === 'modal-noticia') fecharModal();
+            if (event.target.id === 'modal-noticia' || event.target.className === 'btn-fechar') {
+                fecharModal();
+            }
         }
 
-        // 6. INICIAR O MOTOR
         window.onload = async () => {
-            await buscarNoticias(); // Busca a primeira vez
-            setInterval(buscarNoticias, 60000); // Repete a cada 60 segundos (1 minuto) exatamente
+            await buscarNoticias(); 
+            setInterval(buscarNoticias, 60000); // 1 minuto
         };
     </script>
 </body>
-    </html>
-    
+</html>
