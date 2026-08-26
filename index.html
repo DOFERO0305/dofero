@@ -25,7 +25,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        /* MANTÉM TODO O SEU CSS ORIGINAL INTACTO */
         :root { 
             --primary: #dc2626; 
             --primary-dark: #991b1b;
@@ -240,12 +239,10 @@
 
 <header class="app-header" id="main-header">
     <div class="app-header-inner">
-        <!-- LOGO ATUALIZADA -->
         <a href="javascript:void(0)" class="logo" onclick="switchTab('home')">Xvaz<span>ado</span></a>
         <button class="icon-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon-top"></i></button>
     </div>
     <div class="breaking-bar">
-        <!-- TEXTO DA BARRA ATUALIZADO -->
         <div class="breaking-text" id="breaking-ticker">A carregar as últimas publicações do Xvazado...</div>
     </div>
 </header>
@@ -360,6 +357,7 @@
         <button class="modal-close" onclick="forceClose('modal-contactos')"><i class="fas fa-times"></i></button>
         <h3>Contactos</h3>
         <p>Acesse o portal para mais informações.</p>
+        <p>Desenvolvido por Donaldo F. Rodrigues (DOFERO)</p>
     </div>
 </div>
 
@@ -426,6 +424,7 @@ function loadAppShell() {
     }
 }
 
+// FUNÇÃO OTIMIZADA PARA CARREGAR MAIS RÁPIDO
 function loadNewsProgressive() {
     if (isFetching) return;
     
@@ -438,12 +437,16 @@ function loadNewsProgressive() {
     isFetching = true;
     document.getElementById('scroll-anchor').style.display = 'flex';
     let requestsDone = 0;
-    const cacheBuster = new Date().getTime(); 
 
     SOURCES.forEach(src => {
-        // Aumentado o per_page para 10 já que é apenas um site
-        fetch(`${src.api}?_embed=wp:featuredmedia&per_page=10&page=${currentPage}&_t=${cacheBuster}`, { signal: AbortSignal.timeout(8000) })
-        .then(res => res.ok ? res.json() : [])
+        // Reduzido para 6 posts iniciais e removido o bloqueador de cache
+        const apiUrl = `${src.api}?_embed=wp:featuredmedia&per_page=6&page=${currentPage}`;
+
+        fetch(apiUrl, { signal: AbortSignal.timeout(10000) })
+        .then(res => {
+            if (!res.ok) throw new Error("Erro na resposta do servidor");
+            return res.json();
+        })
         .then(data => {
             let added = false;
             data.forEach(p => {
@@ -460,24 +463,32 @@ function loadNewsProgressive() {
             if (added) {
                 renderFeed(); 
                 if(currentPage === 1) { 
-                    buildSlider(); updateTicker(); 
+                    buildSlider(); 
+                    updateTicker(); 
                     localStorage.setItem('offline_cache_xv', JSON.stringify(allPosts.slice(0, 40)));
                 }
             }
         })
-        .catch(() => {})
+        .catch(error => {
+            console.error("Falha ao puxar os dados:", error);
+            document.getElementById('scroll-anchor').innerHTML = '<span style="color:var(--primary); font-size: 0.9rem; padding: 10px; display: block;">Erro ao ligar ao site. O Xvazado pode estar a bloquear acessos externos (CORS) ou sob carga elevada.</span>';
+        })
         .finally(() => {
             requestsDone++;
-            if (requestsDone === SOURCES.length) { isFetching = false; currentPage++; document.getElementById('scroll-anchor').style.display = 'none'; }
+            if (requestsDone === SOURCES.length) { 
+                isFetching = false; 
+                currentPage++; 
+                document.getElementById('scroll-anchor').style.display = 'none'; 
+            }
         });
     });
 }
 
 function backgroundFetchNew() {
     if(!navigator.onLine) return;
-    const cacheBuster = new Date().getTime(); 
     SOURCES.forEach(src => {
-        fetch(`${src.api}?_embed=wp:featuredmedia&per_page=3&page=1&_t=${cacheBuster}`)
+        // Removido o bloqueador de cache aqui também
+        fetch(`${src.api}?_embed=wp:featuredmedia&per_page=3&page=1`)
         .then(res => res.ok ? res.json() : [])
         .then(data => {
             let added = false;
